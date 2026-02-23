@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Feliz Aniversário Ana Cherosa</title>
+
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  background: radial-gradient(circle at bottom, #1a0026, #000);
+  font-family: Arial, sans-serif;
+}
+
+h1{
+  position:absolute;
+  width:100%;
+  top:40%;
+  text-align:center;
+  color:#fff;
+  font-size:3em;
+  text-shadow:0 0 10px #ff00ff, 0 0 20px #ff1493, 0 0 40px #ff00ff;
+  animation: brilho 2s infinite alternate;
+  z-index:3;
+}
+
+@keyframes brilho{
+  from{ text-shadow:0 0 10px #ff00ff, 0 0 20px #ff1493; }
+  to{ text-shadow:0 0 20px #ffff00, 0 0 40px #ff0000; }
+}
+
+canvas{
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:1;
+}
+
+.heart{
+  position:absolute;
+  color:#ff4da6;
+  font-size:20px;
+  animation: subir linear infinite;
+  z-index:2;
+}
+
+@keyframes subir{
+  from{ transform:translateY(100vh); opacity:1; }
+  to{ transform:translateY(-10vh); opacity:0; }
+}
+
+.music{
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  z-index:4;
+  opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<h1>💖 Feliz Aniversário Ana Cherosa 💖</h1>
+<canvas id="canvas"></canvas>
+
+<div class="music">
+<iframe width="280" height="160"
+src="https://www.youtube.com/embed/6m0oX3QvRr0?autoplay=1&loop=1&playlist=6m0oX3QvRr0"
+title="Esqueci - Bruno e Marrone"
+frameborder="0"
+allow="autoplay; encrypted-media"
+allowfullscreen>
+</iframe>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+class Particle{
+  constructor(x,y,color){
+    this.x=x;
+    this.y=y;
+    this.color=color;
+    this.radius=2;
+    this.speedX=(Math.random()-0.5)*6;
+    this.speedY=(Math.random()-0.5)*6;
+    this.alpha=1;
+  }
+
+  update(){
+    this.x+=this.speedX;
+    this.y+=this.speedY;
+    this.alpha-=0.02;
+  }
+
+  draw(){
+    ctx.globalAlpha=this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+    ctx.fillStyle=this.color;
+    ctx.fill();
+  }
+}
+
+function createFirework(){
+  const x=Math.random()*canvas.width;
+  const y=Math.random()*canvas.height/2;
+  const colors=["#ff0043","#14fc56","#1e90ff","#ffae00","#ff00ff","#ff1493"];
+  const color=colors[Math.floor(Math.random()*colors.length)];
+
+  for(let i=0;i<80;i++){
+    particles.push(new Particle(x,y,color));
+  }
+}
+
+function animate(){
+  ctx.globalAlpha=0.2;
+  ctx.fillStyle="black";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.globalAlpha=1;
+
+  particles.forEach((p,index)=>{
+    if(p.alpha<=0){
+      particles.splice(index,1);
+    }else{
+      p.update();
+      p.draw();
+    }
+  });
+
+  requestAnimationFrame(animate);
+}
+
+setInterval(createFirework,800);
+animate();
+
+window.addEventListener("resize",()=>{
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+});
+
+// Criar corações subindo
+function criarCoracao(){
+  const heart=document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML="💖";
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.fontSize=(Math.random()*20+15)+"px";
+  heart.style.animationDuration=(Math.random()*5+5)+"s";
+  document.body.appendChild(heart);
+
+  setTimeout(()=>{
+    heart.remove();
+  },10000);
+}
+
+setInterval(criarCoracao,500);
+</script>
+
+</body>
+</html>
